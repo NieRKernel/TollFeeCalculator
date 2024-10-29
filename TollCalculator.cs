@@ -1,12 +1,15 @@
 ﻿using Toll;
 using TollFeeCalculator;
 
-// TollCalculator could implement an interface for GetTollFeeForVehicle in case different ways of counting the fee rates exists
+// TollCalculator could implement an interface for GetTollFeeForVehicle in case different ways of counting the fee rates
+// Have tried to utilize the SOLID principles when refactoring the code
 public class TollCalculator
 {
     private readonly ITollDate m_Tolldate;
     private readonly ICostPerTimeInterval m_CostPerTimeInterval;
     
+    // Dependency injection
+    // Makes classes more isolated, easier to test, reuse, maintain and narrow down the scope of a given class
     public TollCalculator(ITollDate tollDate, ICostPerTimeInterval costPerTimeInterval)
     {
         m_Tolldate = tollDate;

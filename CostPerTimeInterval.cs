@@ -1,5 +1,7 @@
 ﻿namespace Toll
 {
+    // Seperated into classes so each class has one "responsibility" to have, in this case to get the cost for a given time interval during a day
+    // But it should be opened for extensions and can be introduce new functionality that make sense for the class
     public class TownPerTimeIntervalCost : ICostPerTimeInterval
     {
         public List<CostPerTimeInterval> TollFeesIntervals;
