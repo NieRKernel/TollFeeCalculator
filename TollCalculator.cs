@@ -28,30 +28,32 @@ public class TollCalculator
     {
         DateTime intervalStart = dates[0];
         int totalFee = 0;
+        var costCurrentHour = 0;
+
         foreach (DateTime date in dates)
         {
             int nextFee = GetTollFee(date, vehicle);
-            int tempFee = GetTollFee(intervalStart, vehicle); 
 
-            long diffInMillies = date.Millisecond - intervalStart.Millisecond;
+            long diffInMillies = (date.Ticks - intervalStart.Ticks) / 10000; // Fix bug here where milisecond was used instead of ticks
             long minutes = diffInMillies / 1000 / 60;
 
-            // Within an hour then adjust the fee
+            // Within an hour then set new highest fee for the hour
             if (minutes <= 60)
             {
-                if (totalFee > 0)
-                { 
-                    totalFee -= tempFee;
+                if(costCurrentHour < nextFee)
+                {
+                    costCurrentHour = nextFee;
                 }
-           
-                // Add the highest out of next fee or temporary temp fee
-                totalFee += Math.Max(nextFee, tempFee);
             }
-            else // If an hour has passed then add to the total
+            else // If an hour has passed then the highest cost for the current previous lept hour
             {
-                totalFee += nextFee;
+                totalFee += costCurrentHour == 0 ? nextFee : costCurrentHour;
+                costCurrentHour = 0;
+                intervalStart = date;
             }
         }
+
+        totalFee += costCurrentHour;
 
         // Highest fee for a given day is 60, so pick the lowest out of total accumulated total fee and 60
         return Math.Min(totalFee, 60);
